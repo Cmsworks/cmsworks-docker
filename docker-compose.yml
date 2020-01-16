@@ -44,8 +44,20 @@ services:
         volumes:
             - ./app:/app
         working_dir: /app
+    cmsworks-redis:
+        image: redis:5.0-alpine
+        volumes:
+            - cmsworks-redis:/data
+        command:
+            - 'redis-server'
+            - '--databases 2'
+            - '--save 900 1'
+            - '--save 300 10'
+            - '--save 60 10000'
+            - '--requirepass secret'
 volumes:
     cmsworks-postgres:
+    cmsworks-redis:
     composer:
 
 networks:
