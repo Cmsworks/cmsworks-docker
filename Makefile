@@ -22,13 +22,17 @@ docker-pull:
 docker-build:
 	docker-compose build
 
-cmsworks-init: cmsworks-composer-install cmsworks-wait-db cmsworks-migrations cmsworks-fixtures cmsworks-ready
+cmsworks-init: cmsworks-composer-install cmsworks-assets-install cmsworks-wait-db cmsworks-migrations cmsworks-fixtures cmsworks-ready
 
 cmsworks-clear:
 	docker run --rm -v ${PWD}/app:/app --workdir=/app alpine rm -f .ready
 
 cmsworks-composer-install:
 	docker-compose run --rm cmsworks-php-fpm composer install
+
+cmsworks-assets-install:
+	docker-compose run --rm cmsworks-node yarn install
+	docker-compose run --rm cmsworks-node npm rebuild node-sass
 
 cmsworks-wait-db:
 	until docker-compose exec -T cmsworks-postgres pg_isready --timeout=0 --dbname=cmsworks ; do sleep 1 ; done
@@ -41,6 +45,9 @@ cmsworks-fixtures:
 
 cmsworks-ready:
 	docker run --rm -v ${PWD}/app:/app --workdir=/app alpine touch .ready
+
+cmsworks-assets-dev:
+	docker-compose run --rm cmsworks-node npm run dev
 
 cmsworks-test:
 	docker-compose run --rm cmsworks-php-fpm php bin/phpunit

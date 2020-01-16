@@ -5,7 +5,7 @@ services:
             context: ./docker/development
             dockerfile: nginx.docker
         volumes:
-            - ./app:/app:cached
+            - ./app:/app
         depends_on:
             - cmsworks-php-fpm
         ports:
@@ -15,7 +15,7 @@ services:
             context: ./docker/development
             dockerfile: php-fpm.docker
         volumes:
-            - ./app:/app:cached
+            - ./app:/app
         depends_on:
             - cmsworks-postgres
             - mailer
@@ -33,6 +33,17 @@ services:
         image: mailhog/mailhog
         ports:
             - "8082:8025"
+    cmsworks-node-watch:
+        image: node:12.7-alpine
+        volumes:
+            - ./app:/app
+        working_dir: /app
+        command: sh -c "until [ -f .ready ] ; do sleep 1 ; done && npm run watch"
+    cmsworks-node:
+        image: node:12.7-alpine
+        volumes:
+            - ./app:/app
+        working_dir: /app
 volumes:
     cmsworks-postgres:
     composer:
