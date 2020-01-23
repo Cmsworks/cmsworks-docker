@@ -1,6 +1,7 @@
 FROM nginx:1.15-alpine
 
 COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY ./nginx/example.conf /etc/nginx/conf.d/example.conf
 
 WORKDIR /app
 
