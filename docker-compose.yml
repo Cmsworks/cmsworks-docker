@@ -5,7 +5,7 @@ services:
             context: ./docker/development
             dockerfile: nginx.docker
         volumes:
-            - ./app:/app:cached
+            - ./app:/app
         depends_on:
             - cmsworks-php-fpm
         ports:
@@ -15,10 +15,9 @@ services:
             context: ./docker/development
             dockerfile: php-fpm.docker
         volumes:
-            - ./app:/app:cached
+            - ./app:/app
         depends_on:
             - cmsworks-postgres
-            - cmsworks-redis
             - mailer
     cmsworks-postgres:
         image: postgres:11.2-alpine
